@@ -34,9 +34,9 @@ Useful Reference
 
 The below link may help you to understand how do you write, such as this library by yourself.
 
+- `★ ANSI_escape_code <https://en.wikipedia.org/wiki/ANSI_escape_code>`_
 - `stackoverflow: how to print colored text in terminal in python <https://stackoverflow.com/questions/287871/how-to-print-colored-text-in-terminal-in-python>`_
-- `ANSI_escape_code <https://en.wikipedia.org/wiki/ANSI_escape_code>`_
-- https://godoc.org/github.com/whitedevops/colors
+
 
 
 More

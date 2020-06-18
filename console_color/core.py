@@ -1,4 +1,5 @@
-from typing import NamedTuple, Union, Type, Tuple, TypeVar
+from typing import NamedTuple, Union, Type, Tuple, TypeVar, Callable
+import warnings
 
 T_print_flag = TypeVar('T_print_flag', bound=bool)
 T_RGB = TypeVar('T_RGB', Tuple[int, int, int], str)
@@ -48,6 +49,7 @@ class RGBColor:
 
 
 class SchemeBase(NamedTuple):
+    # https://en.wikipedia.org/wiki/ANSI_escape_code
     END = '\33[0m'
 
 
@@ -55,9 +57,11 @@ class SchemeStyle(NamedTuple):
     BOLD = '\33[1m'
     ITALIC = '\33[3m'
     URL = '\33[4m'
-    BLINK = '\33[5m'
-    BLINK2 = '\33[6m'
+    BLINK_SLOW = '\33[5m'  # less than 150 per minute
+    BLINK_RAPID = '\33[6m'  # MS-DOS ANSI.SYS, 150+ per minute; not widely supported
     SELECTED = '\33[7m'
+    HIDDEN = '\033[8m'
+    STRIKE = '\033[9m'
 
 
 class SchemeBG(NamedTuple):
@@ -105,8 +109,24 @@ BG = SchemeBG()
 Style = SchemeStyle()
 
 
-class ColorPrint:
+class ColorPrinter:
+
     __slots__ = ()
+
+    warnings_show = True
+
+    @classmethod
+    def create_print(
+        cls, fore: T_RGB = None, bg: T_RGB = None, style: Style = '', pf: T_print_flag = True
+    ) -> Callable[[str], Union[None, str]]:
+        """
+        Usage::
+
+            from console_color import *
+            my_print = ColorPrinter.create_print(fore='#FF0000', bg=(0, 128, 255), style=Style.ITALIC)
+            my_print('text')
+        """
+        return lambda text: cls.print(text, fore, bg, style, pf)
 
     @staticmethod
     def _set_color(text, target: int, rgb: Tuple[int, int, int], end_tag=True):
@@ -136,7 +156,7 @@ class ColorPrint:
     @classmethod
     def print(cls, text: str, fore: T_RGB = None, bg: T_RGB = None,
               style: Style = '',
-              pf: T_print_flag = True):
+              pf: T_print_flag = True, end_flag=True):
         """
         print with color
 
@@ -145,6 +165,7 @@ class ColorPrint:
         :param bg: background color. `RGB.` or `#FF0000`
         :param style: Style.BOLD, Style.Italic, Style.URL ...
         :param pf: print_flag. It will print when it is True. Otherwise, return the value.
+        :param end_flag: Auto-add end flag unless you want to use use the blink or keep the style continue. Otherwise, make it to True.
         :return:
         """
 
@@ -158,23 +179,29 @@ class ColorPrint:
             bg = tuple((r, g, b))
         fore = cls.fore_color('', fore, end_tag=False) if fore else ''
         bg = cls.back_color('', bg, end_tag=False) if bg else ''
-        text = bg + fore + style + text + SchemeBase.END
+        text = bg + fore + style + text + (SchemeBase.END if end_flag else '')
         return print(text) if pf else text
 
-    @staticmethod
-    def zenburn_print(text: str,
-                      fore: Fore = '', bg: BG = '', style: Style = '',
-                      pf: T_print_flag = True):
+    @classmethod
+    def zprint(cls, text: str,
+               fore: Fore = '', bg: BG = '', style: Style = '',
+               pf: T_print_flag = True, end_flag=True):
         """
+
+        **Zenburn** is a color scheme created for Vim.
+
         :param text:
         :param fore: Please choose from the ``Fore.``
         :param bg: Please choose from the ``BG.``
         :param style: Style.BOLD, Style.Italic, Style.URL ...
         :param pf: It will print when it is True. Otherwise, return the value.
+        :param end_flag: Auto-add end flag unless you want to use use the blink or keep the style continue. Otherwise, make it to True.
         :return:
         """
-        text = bg + fore + style + text + SchemeBase.END
+
+        if cls.warnings_show:
+            warnings.warn("zprint is not better than cprint, consider use cprint to instead of it.", DeprecationWarning)
+            cls.warnings_show = False
+
+        text = bg + fore + style + text + (SchemeBase.END if end_flag else '')
         return print(text) if pf else text
-
-
-RGB, cprint, zprint = RGBColor(), ColorPrint.print, ColorPrint.zenburn_print

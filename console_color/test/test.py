@@ -7,34 +7,83 @@ from pathlib import Path
 if 'env path':
     import sys
     sys.path.insert(0, str(Path(__file__).parent.parent.parent))
-    from console_color import __version__, clear_console
-    from console_color.core import RGB, Fore, BG, cprint, zprint, Style
+    from console_color import __version__, RGB, cprint, zprint, create_print
+    from console_color.core import Fore, BG, Style, ColorPrinter
     sys.path.remove(sys.path[0])
 
 
 class CoreTests(TestCase):
 
     def test_basic(self):
-        cprint('123\n456', fore=RGB.RED, bg=RGB.BLUE)
-        cprint('123\n456', RGB.RED)
-        zprint('123\n456', Fore.YELLOW)
-        zprint('123\n456', Fore.VIOLET, BG.RED)
+        cprint('cp fore.red + bg.blue\n123', fore=RGB.RED, bg=RGB.BLUE)
+        cprint('cp fore.red\n123', RGB.RED)
+        cprint('cp bg.PURPLE\n123', bg=RGB.PURPLE)
+        zprint('zp fore.yellow\n123', Fore.YELLOW)
+        zprint('zp fore.violet + bg.red\n123', Fore.VIOLET, BG.RED)
+        zprint('zp bg.violet\n123', bg=BG.RED)
 
     def test_combine(self):
-        print('abc' + cprint('RED', RGB.RED, pf=False) + '456')
-        print('abc' + cprint('RED', RGB.WHITE, RGB.BLACK, pf=False) + '456')
-        print('abc' + zprint('RED', Fore.YELLOW, BG.RED, '', False) + '456')
-        print('abc' + zprint('No fore, no bg, and style is ITALIC', style=Style.ITALIC, pf=False) + '456')
+        print('cp fore.red abc' + cprint('RED', RGB.RED, pf=False) + '456')
+        print('cp fore.white + bg.black abc' + cprint('RED', RGB.WHITE, RGB.BLACK, pf=False) + '456')
+        print('zp fore.yellow + bg.red ' + zprint('RED', Fore.YELLOW, BG.RED, '', False) + '456')
+        print('zp style only: italic' + zprint('No fore, no bg, and style is ITALIC', style=Style.ITALIC, pf=False) + '  456')
+        print('zp style only: italic' + zprint('No fore, no bg, and style is ITALIC', style=Style.BOLD + Style.ITALIC, pf=False) + '  456')
 
     def test_style(self):
         zprint('zp fore: yellow\n bg: red, style:bold', Fore.YELLOW, BG.RED, style=Style.BOLD)
         zprint('zp fore: yellow, style:Italic', Fore.YELLOW, style=Style.ITALIC)
         zprint('zp style url', style=Style.URL)
+        zprint('zp style strike', style=Style.STRIKE)
         cprint('cp fore: yellow, style: Italic', RGB.YELLOW, style=Style.ITALIC)
         cprint('cp style: URL', style=Style.URL)
         cprint('cp, fore: (102, 255, 204), style: Italic ', fore=(102, 255, 204), style=Style.ITALIC)
-        cprint('cp fore: #6666ff, s: I', fore='#6666ff', style=Style.ITALIC)
+        cprint('cp fore: #6666ff, s: Italic', fore='#6666ff', style=Style.ITALIC)
         cprint('cp fore: #6666ff bg: #66ff33', fore='#6666ff', bg='#66ff33', style=Style.ITALIC)
+        cprint('cp style: strike', style=Style.STRIKE)
+
+    def test_create_print(self):
+        my_print = ColorPrinter.create_print(fore='#FF0000', bg='#0080ff', style=Style.ITALIC)
+        red_print = ColorPrinter.create_print(fore=(255, 0, 0), bg=(0, 128, 255), style=Style.ITALIC)
+        bi_print = ColorPrinter.create_print(style=Style.BOLD + Style.ITALIC, pf=False)
+        my_print("red print fore='#FF0000', bg='#0080ff', style=Style.ITALIC")
+        red_print("red print fore=(255, 0, 0), bg=(0, 128, 255), style=Style.ITALIC")
+        print(f'This is {bi_print("Italic and Bold")} !!!')
+
+    def test_basic_usage(self):
+        print('#only Fore test#')
+        cprint('red: RGB.RED', RGB.RED)
+        cprint('red: #FF0000', bg='#FF0000')  # It doesn't matter for string upper or lower, and if you don't want to add the sign of #, it's ok too.
+        cprint('red: (255, 0, 0)', (255, 0, 0))
+
+        print('#only Background test#')
+        cprint('red: RGB.RED', bg=RGB.RED)
+        cprint('red: #FF0000', bg='#ff0000')
+        cprint('red: (255, 0, 0)', bg=(255, 0, 0))
+
+        print('#fore + bg#')
+        cprint('red: RGB.RED, RGB.YELLOW', RGB.RED, RGB.YELLOW)
+        cprint('red: FF0000, #FFFF00', 'FF0000', '#FFFF00')
+        cprint('red: (255, 0, 0), (255, 255, 0)', (255, 0, 0), (255, 255, 0))
+
+        print('#style test#')
+        cprint('Italic', style=Style.ITALIC)
+        cprint('Italic and Bold', style=Style.BOLD + Style.ITALIC)
+        cprint('Strike', style=Style.STRIKE)
+
+        print('#combine normal text#')  # set pf=False
+        print(f"123 {cprint('Fore=Red, bg=Yellow, Style=Italic and Bold', RGB.RED, RGB.YELLOW, Style.BOLD + Style.ITALIC, False)} 456")
+        print(f"123 {cprint('BOLD', style=Style.BOLD, pf=False)} 456")
+
+        print('#keeping the setting#')
+        ry_print = create_print(fore='FF0000', bg='#FFFF00')
+        inner_ry_text = create_print('FF0000', '#FFFF00', Style.BOLD + Style.ITALIC, pf=False)
+        msg = "fore='FF0000', bg='#FFFF00'"
+        print(msg)
+        ry_print(msg)
+        print('...')
+        ry_print(msg)
+
+        print(f'123 {inner_ry_text("fore=red, bg=yellow, style=bold+italic")} !!!')
 
 
 class CLITests(TestCase):
