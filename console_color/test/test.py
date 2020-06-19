@@ -6,9 +6,11 @@ from unittest import TestCase
 if 'env path':
     import sys
     from pathlib import Path
+
     sys.path.insert(0, str(Path(__file__).parent.parent.parent))
     from console_color import __version__, RGB, cprint, zprint, create_print
     from console_color.core import Fore, BG, Style, ColorPrinter
+
     sys.path.remove(sys.path[0])
 
 
@@ -93,6 +95,46 @@ class CoreTests(TestCase):
         ry_print(msg)
 
         print(f'123 {inner_ry_text("fore=red, bg=yellow, style=bold+italic")} !!!')
+
+
+class BuildDemoImageTests(TestCase):
+    def test_show_all_color(self):
+        from itertools import permutations
+        row_string = ''
+        for count, rgb in enumerate(permutations((_ for _ in range(0, 256, 40)), 3)):
+            count += 1
+            fore_color = RGB.complementary_color(rgb)
+            row_string += cprint(f'{RGB.tuple2hex_str(rgb)}  ', fore_color, rgb, pf=False)
+
+            if count % 7 == 0:
+                print(row_string),
+                row_string = ''
+
+        print(row_string) if len(row_string) > 0 else None
+
+    def test_print_hot_color(self):
+        r, g, b = 0, 0, 0
+        row_string = ''
+        count = 0
+        while 1:
+            count += 1
+            t_rgb = tuple((r, g, b))
+            fore_color = RGB.complementary_color(t_rgb)
+            row_string += cprint(f'{RGB.tuple2hex_str(t_rgb)}  ', fore_color, t_rgb, pf=False)
+
+            if count % 5 == 0:
+                print(row_string),
+                row_string = ''
+
+            r_end_flag = r + 17 > 255
+            g_end_flag = g + 17 > 255
+            b_end_flag = b + 17 > 255
+            r = r if r_end_flag else r + 17
+            g = g + 17 if r_end_flag and not g_end_flag else g
+            b = b + 17 if g_end_flag and not b_end_flag else b
+            if r_end_flag and g_end_flag and b_end_flag:
+                # print(row_string)
+                break
 
 
 class CLITests(TestCase):

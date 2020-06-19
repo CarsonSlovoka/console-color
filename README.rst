@@ -16,11 +16,11 @@ Features
 - Supports fore, background, style (Bold, Italic, URL, ...), and you can do **permutations**, really flexible.
 - Well documented, you can find all the usage form `console_color/test/*` folder and `console_color/demo/*.ipynb`
 
-USAGE
+Usage
 ------
 
 
-DEMO
+Demo
 ==========
 
 
@@ -32,7 +32,7 @@ If you want to contribute, please use the ``release`` branch as the stable branc
 
 Be sure to **write tests** for new features. If you have any difficulties, you can ask me or discuss with me. I am glad if you want to join us.
 
-By the way, I'm very friendly!
+By the way, I'm very friendly! (You can ask me questions with Chinese)
 
 Useful Reference
 ==================
