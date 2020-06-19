@@ -3,3 +3,5 @@ dist/
 build/
 *.pyc
 *egg-info
+*ipynb_checkpoints/
+jupyter
