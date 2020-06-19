@@ -2,10 +2,10 @@ __all__ = ('test_setup',)
 
 import unittest
 from unittest import TestCase
-from pathlib import Path
 
 if 'env path':
     import sys
+    from pathlib import Path
     sys.path.insert(0, str(Path(__file__).parent.parent.parent))
     from console_color import __version__, RGB, cprint, zprint, create_print
     from console_color.core import Fore, BG, Style, ColorPrinter
@@ -48,6 +48,14 @@ class CoreTests(TestCase):
         my_print("red print fore='#FF0000', bg='#0080ff', style=Style.ITALIC")
         red_print("red print fore=(255, 0, 0), bg=(0, 128, 255), style=Style.ITALIC")
         print(f'This is {bi_print("Italic and Bold")} !!!')
+
+    def test_end_flag(self):
+        """
+        With end-flag, it makes the print normal. Otherwise, it will keep the style that you last used.
+        """
+        cprint('cp fore.red + bg.blue', fore=RGB.RED, bg=RGB.BLUE, end_flag=False)
+        print('fore.red + bg.blue')
+        print(Style.NORMAL + 'normal')
 
     def test_basic_usage(self):
         print('#only Fore test#')

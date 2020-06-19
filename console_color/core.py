@@ -48,12 +48,9 @@ class RGBColor:
         return f'#{"".join(["%0.2X" % i for i in iv])}'
 
 
-class SchemeBase(NamedTuple):
-    # https://en.wikipedia.org/wiki/ANSI_escape_code
-    END = '\33[0m'
-
-
 class SchemeStyle(NamedTuple):
+    # https://en.wikipedia.org/wiki/ANSI_escape_code
+    NORMAL = '\33[0m'
     BOLD = '\33[1m'
     ITALIC = '\33[3m'
     URL = '\33[4m'
@@ -131,7 +128,7 @@ class ColorPrinter:
     @staticmethod
     def _set_color(text, target: int, rgb: Tuple[int, int, int], end_tag=True):
         r, g, b = rgb
-        return f"\033[{target};2;{r};{g};{b}m{text}{SchemeBase.END if end_tag else ''}"
+        return f"\033[{target};2;{r};{g};{b}m{text}{Style.NORMAL if end_tag else ''}"
 
     @classmethod
     def fore_color(cls, text, rgb: Tuple[int, int, int], end_tag=True):
@@ -165,7 +162,7 @@ class ColorPrinter:
         :param bg: background color. `RGB.` or `#FF0000`
         :param style: Style.BOLD, Style.Italic, Style.URL ...
         :param pf: print_flag. It will print when it is True. Otherwise, return the value.
-        :param end_flag: Auto-add end flag unless you want to use use the blink or keep the style continue. Otherwise, make it to True.
+        :param end_flag: Auto-add end flag unless you want keep the style continue. Otherwise, make it to True.
         :return:
         """
 
@@ -179,7 +176,7 @@ class ColorPrinter:
             bg = tuple((r, g, b))
         fore = cls.fore_color('', fore, end_tag=False) if fore else ''
         bg = cls.back_color('', bg, end_tag=False) if bg else ''
-        text = bg + fore + style + text + (SchemeBase.END if end_flag else '')
+        text = bg + fore + style + text + (Style.NORMAL if end_flag else '')
         return print(text) if pf else text
 
     @classmethod
@@ -195,7 +192,7 @@ class ColorPrinter:
         :param bg: Please choose from the ``BG.``
         :param style: Style.BOLD, Style.Italic, Style.URL ...
         :param pf: It will print when it is True. Otherwise, return the value.
-        :param end_flag: Auto-add end flag unless you want to use use the blink or keep the style continue. Otherwise, make it to True.
+        :param end_flag: Auto-add end flag unless you want keep the style continue. Otherwise, make it to True.
         :return:
         """
 
@@ -203,5 +200,5 @@ class ColorPrinter:
             warnings.warn("zprint is not better than cprint, consider use cprint to instead of it.", DeprecationWarning)
             cls.warnings_show = False
 
-        text = bg + fore + style + text + (SchemeBase.END if end_flag else '')
+        text = bg + fore + style + text + (Style.NORMAL if end_flag else '')
         return print(text) if pf else text
