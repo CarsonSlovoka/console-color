@@ -10,6 +10,14 @@
 Release Note
 ==================
 
+0.0.2
+=========
+
+:NEW-FATURES:
+    - Published to PyPI
+    - Build on CircleCi to test the package.
+
+
 0.0.1
 =========
 
