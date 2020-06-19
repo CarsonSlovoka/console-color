@@ -59,9 +59,8 @@ setup(
     version=VERSION_NUMBER,  # x.x.x.{dev, a, b, rc}
 
     packages=find_packages(exclude=['*.test_cases']),
-
+    package_data={f'{PACKAGES_DIR}.demo': ['console_color.ipynb']},
     include_package_data=True,
-    package_data={},
     license="BSD 3-Clause",
 
     author='Carson',
@@ -83,7 +82,7 @@ setup(
     classifiers=[  # https://pypi.org/classifiers/
         'Development Status :: 5 - Production/Stable',
 
-        'Topic :: Scientific/Engineering :: Image Recognition'
+        'Environment :: Console',
         
         'License :: OSI Approved',
 
