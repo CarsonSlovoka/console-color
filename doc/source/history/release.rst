@@ -10,6 +10,11 @@
 Release Note
 ==================
 
+0.0.1
+=========
+
+:NEW-FATURES:
+    - Create documentation with Sphinx. (rtd-theme + disqus + custom_nav_bar)
 
 0.0.0
 =========
