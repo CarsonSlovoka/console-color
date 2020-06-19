@@ -77,6 +77,7 @@ class CoreTests(TestCase):
         cprint('Italic', style=Style.ITALIC)
         cprint('Italic and Bold', style=Style.BOLD + Style.ITALIC)
         cprint('Strike', style=Style.STRIKE)
+        cprint('URL', style=Style.URL)
 
         print('#combine normal text#')  # set pf=False
         print(f"123 {cprint('Fore=Red, bg=Yellow, Style=Italic and Bold', RGB.RED, RGB.YELLOW, Style.BOLD + Style.ITALIC, False)} 456")
@@ -111,3 +112,31 @@ def test_setup():
     suite = suite_function_set  # pick one of two: suite_class_set, suite_function_set
     # unittest.TextTestRunner(verbosity=1).run(suite)  # self.verbosity = 0  # 0, 1, 2.  unittest.TextTestResult
     return suite
+
+
+def try_by_yourself():
+    """
+    If you have no idea how to use this library, you can input by indicate, and then it will tell you what the grammar you should write.
+    """
+
+    text = chr(34) + input('text:') + chr(34)
+    in_fore = input('Fore (#XXYYRR) (r, g, b):')
+    if in_fore:
+        in_fore = str(eval(in_fore)) if in_fore.find(',') != -1 else chr(34) + in_fore + chr(34)
+
+    in_bg = input('Background (#XXYYRR) (r, g, b):')
+    if in_bg:
+        in_bg = str(eval(in_bg)) if in_bg.find(',') != -1 else chr(34) + in_bg + chr(34)
+
+    in_style = input('Style (BOLD, ITALIC, URL, STRIKE) sep=" ":').split(' ')
+    if in_style:
+        in_style = '+'.join([f'Style.{_.upper()}' for _ in in_style])
+    print_cmd = f"cprint({text}{', fore=' + in_fore if in_fore else ''}" \
+                f"{', bg=' + in_bg if in_bg else ''}" \
+                f"{', style=' + in_style if in_style else ''})"
+    print(f'grammar: {cprint(print_cmd, RGB.GREEN, RGB.BLACK, pf=False)}')
+    exec(print_cmd)
+
+
+if __name__ == '__main__':
+    try_by_yourself()
