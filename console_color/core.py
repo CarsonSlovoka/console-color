@@ -30,6 +30,27 @@ class RGBColor:
     def change_format(self, new_type: Type[Union[str, tuple]]):
         self._out_format = new_type
 
+    @classmethod
+    def tuple2hex_str(cls, rgb: Tuple[int, int, int]) -> str:
+        return f'#{"".join(["%0.2X" % i for i in rgb])}'
+
+    @classmethod
+    def str_hex2tuple(cls, hex_string: str) -> Tuple[int, int, int]:
+        hex_string = hex_string.replace('#', '')
+        r, g, b = tuple(int(hex_string[i:i + 2], 16) for i in range(0, 6, 2))
+        return tuple((r, g, b))
+
+    @classmethod
+    def complementary_color(cls, rgb: T_RGB) -> T_RGB:
+        """
+        get complementary color
+        """
+        if isinstance(rgb, tuple):
+            r, g, b = tuple(255 - e for e in rgb)
+            return r, g, b
+
+        return '#' + ''.join(['%0.2X' % (255-e) for e in cls.str_hex2tuple(rgb)])
+
     def __getattribute__(self, item):
         iv = super().__getattribute__(item)
         if not item.isupper() or item.startswith('_'):
@@ -43,9 +64,9 @@ class RGBColor:
             return iv
 
         if isinstance(out_format, tuple):  # mean item format is str
-            return tuple(int(iv[i:i+2], 16) for i in range(0, 6, 2))
+            return self.str_hex2tuple(iv)
 
-        return f'#{"".join(["%0.2X" % i for i in iv])}'
+        return self.tuple2hex_str(iv)
 
 
 class SchemeStyle(NamedTuple):
