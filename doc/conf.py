@@ -8,6 +8,8 @@ from pathlib import Path
 from datetime import datetime
 from typing import List
 import types
+from docutils.writers._html_base import HTMLTranslator
+
 
 if 'sys path setting':
     import sys
@@ -29,7 +31,7 @@ release = __version__  # full_version: x.x.x
 version = __version__[:__version__.rfind('.')]  # short_version: x.x
 copyright = f'2020-{datetime.now().year} Carson'
 author = 'Carson Tseng'
-language = 'en'  # 'zh_TW' # https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-language
+language = 'en'  # 'zh_TW' # https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-language  # docutils.languages/*.py
 
 # source_encoding = 'utf-8-sig' default
 source_suffix = ['.rst', '.md']
@@ -42,6 +44,7 @@ extensions = [
     '_ext.select_language',
     '_ext.plugin_disqus',
     '_ext.plugin_extra_html',
+    '_ext.rst_roles',
 ]
 
 todo_include_todos = True
@@ -56,6 +59,7 @@ with open(Path(__file__).parent / Path('_static/css/user.define.rst'), 'r') as f
     user_define_role = f.read()
 
 # will be included at the end of every source file that is read.
+
 rst_epilog = '\n'.join([
     user_define_role + '\n',  # it needs double \n
 ])
@@ -124,7 +128,8 @@ if 'my setting':
     # LEXERS = dict()  # https://stackoverflow.com/questions/16469869/custom-syntax-highlighting-with-sphinx
     NO_JEKYLL = True  # you need to create an empty file in the root directory that lets GitHub know you aren't using Jekyll to structure your site.
 
-    FORCE_REBUILD = False  # write all files (default: only write new and changed files)
+    write_all_output_file = False  # write all files (default: only write new and changed files)  # -a https://www.sphinx-doc.org/en/1.2/invocation.html#cmdoption-sphinx-build-a
+    refresh_env = False  # set True if you want to rebuild.  # -D  https://www.sphinx-doc.org/en/1.2/invocation.html#cmdoption-sphinx-build-E
 
     if 'Disqus':
         disqus_short_name = 'console-color'
