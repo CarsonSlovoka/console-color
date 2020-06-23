@@ -66,6 +66,8 @@ Features
 - Supports fore, background, style (Bold, Italic, URL, ...), and you can do **permutations**, really flexible.
 - Well documented, you can find all the usage form `test.py`_ folder and `console_color.ipynb`_
 
+.. note:: Github page may not show ipynb well, you can go `here <https://colab.research.google.com/drive/1cAYcC6DyiMCyD0RDcEo25LDFCh527TUQ?usp=sharing>`_ to see another resource that I put on Google Colab
+
 Usage
 ------
 
@@ -89,6 +91,9 @@ Demo
 ==========
 
 .. image:: https://raw.githubusercontent.com/CarsonSlovoka/console-color/release/doc/_static/nav_bar.logo.png
+
+.. raw:: html
+    :url: https://carsonslovoka.github.io/console-color/demo/console_color.html
 
 
 Contributing
