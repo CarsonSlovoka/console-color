@@ -90,10 +90,9 @@ Usage
 Demo
 ==========
 
-.. image:: https://raw.githubusercontent.com/CarsonSlovoka/console-color/release/doc/_static/nav_bar.logo.png
+`★Click me <https://carsonslovoka.github.io/console-color/demo/console_color.html>`_ to see the HTML which is converted from ipynb
 
-.. raw:: html
-    :url: https://carsonslovoka.github.io/console-color/demo/console_color.html
+.. image:: https://raw.githubusercontent.com/CarsonSlovoka/console-color/release/doc/_static/nav_bar.logo.png
 
 
 Contributing
