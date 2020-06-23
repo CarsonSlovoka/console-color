@@ -10,7 +10,9 @@ from sphinx.cmd.build import patch_docutils, docutils_namespace, handle_exceptio
 from os import startfile
 from pathlib import Path
 from typing import Union
-import shutil
+from jinja2 import Template
+import re
+import textwrap
 
 
 def main(master_file: Path, source_dir: Path, output_dir: Path):
@@ -24,7 +26,9 @@ class SphinxBuilder:
                  'master_doc'  # index
                  )
     NO_JEKYLL = conf.NO_JEKYLL  # you need to create an empty file in the root directory that lets GitHub know you aren't using Jekyll to structure your site.
-    FORCE_REBUILD = conf.FORCE_REBUILD
+    REFRESH_ENV = conf.refresh_env
+    WRITE_ALL_OUTPUT_FILE = conf.write_all_output_file
+
     HTML_CSS_FILES = conf.html_css_files
     LANGUAGE = conf.language
     HTML_STATIC_PATH = conf.html_static_path[0]
@@ -56,7 +60,9 @@ class SphinxBuilder:
                 '-b', self.BUILD_FORMAT,
                 # '-D', 'extensions=sphinx.ext.autodoc',  # Define, override conf.py
                 '-D', f'master_doc={self.master_doc}',
-                ] + (['-a'] if self.FORCE_REBUILD else [])  # write all files (default: only write new and changed files)
+                '-E' if self.REFRESH_ENV else '',
+                '-a' if self.WRITE_ALL_OUTPUT_FILE else '',
+                ]
 
     def build_main(self, *args):
         print('=' * 50)
@@ -75,7 +81,7 @@ class SphinxBuilder:
         warning = sys.stderr
         error = sys.stderr
 
-        freshenv = False
+        freshenv = self.REFRESH_ENV
         warningiserror = False
         tags = []
         verbosity = 0
@@ -88,13 +94,10 @@ class SphinxBuilder:
                              doc_tree_dir, self.BUILD_FORMAT, conf_overrides,
                              status, warning, freshenv, warningiserror,
                              tags, verbosity, jobs, keep_going)
-                if self.FORCE_REBUILD:
-                    # The Force build seems not to real it is. so just in case, I do it by myself.
-                    shutil.rmtree(self.output_dir, ignore_errors=True)
                 if isinstance(app.builder, StandaloneHTMLBuilder):
                     # setup_simple_extra_html(app)
                     ...
-                app.build(self.FORCE_REBUILD, filenames)
+                app.build(self.WRITE_ALL_OUTPUT_FILE, filenames)
 
                 return app.statuscode
         except (Exception, KeyboardInterrupt) as exc:
@@ -116,5 +119,22 @@ class SphinxBuilder:
         self._start_base()
 
 
+def build_select_language_html():
+    with open(str(Path('doc/_templates/select_language.html')), 'r', encoding='utf-8') as f:
+        t = Template(f.read())
+    list_language = conf.support_lang_list
+    dict_language = dict()
+    for lang, value in list_language:
+        value = value.replace('_', '-') if value != '' else lang
+        dict_language[lang] = value
+
+    content = t.render(title=conf.project, dict_language=dict_language, analytics_id=getattr(conf, 'analytics_id', None))
+    content = re.sub('^\n', '', textwrap.dedent(content), flags=re.MULTILINE)  # Search line data that contain \n begin the first character
+    out_file = Path('docs/index.html')
+    with open(out_file, 'w', encoding='utf-8') as f:
+        f.write(content)
+
+
 if __name__ == '__main__':
     main(conf.master_file, conf.source_dir, conf.output_path)
+    build_select_language_html()

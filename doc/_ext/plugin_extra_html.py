@@ -6,6 +6,8 @@ from sphinx.util.osutil import ensuredir
 from pathlib import Path
 import warnings
 from typing import Tuple, Union
+import textwrap
+import re
 
 
 def expand_init_builder(app):
@@ -80,6 +82,7 @@ def setup_simple_extra_html(app: Sphinx):
         output_filename = html_builder.get_outfilename(page_name)
         ensuredir(Path(output_filename).parent)  # Ensure that a path exists.
 
+        output_data = re.sub('^\n', '', textwrap.dedent(output_data), flags=re.MULTILINE)  # Search line data that contain \n begin the first character
         encoding = user_config.get('encoding', 'utf-8-sig')
         try:
             with open(output_filename, 'w', encoding=encoding, errors='xmlcharrefreplace') as f:
