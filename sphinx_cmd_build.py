@@ -11,6 +11,8 @@ from os import startfile
 from pathlib import Path
 from typing import Union
 import shutil
+from jinja2 import Environment, PackageLoader, Template
+from collections import defaultdict
 
 
 def main(master_file: Path, source_dir: Path, output_dir: Path):
@@ -117,5 +119,21 @@ class SphinxBuilder:
         self._start_base()
 
 
+def build_select_language_html():
+    with open(str(Path('doc/_templates/select_language.html')), 'r', encoding='utf-8') as f:
+        t = Template(f.read())
+    list_language = conf.support_lang_list
+    dict_language = dict()
+    for lang, value in list_language:
+        value = value.replace('_', '-') if value != '' else lang
+        dict_language[lang] = value
+
+    content = t.render(title=conf.project, dict_language=dict_language, analytics_id=getattr(conf, 'analytics_id', None))
+    out_file = Path('docs/index.html')
+    with open(out_file, 'w', encoding='utf-8') as f:
+        f.write(content)
+
+
 if __name__ == '__main__':
     main(conf.master_file, conf.source_dir, conf.output_path)
+    build_select_language_html()

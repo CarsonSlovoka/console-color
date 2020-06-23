@@ -101,6 +101,7 @@ if 'html setting':
         # "analytics_id": "",
         'style_external_links': True,  # Add an icon next to external links.
         "style_nav_header_background": "#4e917a",
+        # 'analytics_id': 'UA-????????-?'
     }
 
     html_context = {
