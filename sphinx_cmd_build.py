@@ -10,9 +10,9 @@ from sphinx.cmd.build import patch_docutils, docutils_namespace, handle_exceptio
 from os import startfile
 from pathlib import Path
 from typing import Union
-import shutil
-from jinja2 import Environment, PackageLoader, Template
-from collections import defaultdict
+from jinja2 import Template
+import re
+import textwrap
 
 
 def main(master_file: Path, source_dir: Path, output_dir: Path):
@@ -129,6 +129,7 @@ def build_select_language_html():
         dict_language[lang] = value
 
     content = t.render(title=conf.project, dict_language=dict_language, analytics_id=getattr(conf, 'analytics_id', None))
+    content = re.sub('^\n', '', textwrap.dedent(content), flags=re.MULTILINE)  # Search line data that contain \n begin the first character
     out_file = Path('docs/index.html')
     with open(out_file, 'w', encoding='utf-8') as f:
         f.write(content)
