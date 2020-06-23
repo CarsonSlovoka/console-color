@@ -10,6 +10,11 @@
 Release Note
 ==================
 
+0.0.3
+=========
+
+    - Add a script of ``ipynb`` to let the README is more explicit.
+
 0.0.2
 =========
 
