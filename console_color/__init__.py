@@ -2,7 +2,7 @@ __all__ = (
     'RGB', 'cprint', 'create_print',
     'Style', 'Fore', 'BG',
     'clear_console',)
-__version__ = '0.0.3'
+__version__ = '0.1.0'
 __author__ = ['Carson', ]
 __description__ = 'print with color on the console.'
 
