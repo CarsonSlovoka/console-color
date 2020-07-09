@@ -197,7 +197,7 @@ class ColorPrinter:
             bg = tuple((r, g, b))
         fore = cls.fore_color('', fore, end_tag=False) if fore else ''
         bg = cls.back_color('', bg, end_tag=False) if bg else ''
-        text = bg + fore + style + text + (Style.NORMAL if end_flag else '')
+        text = bg + fore + style + str(text) + (Style.NORMAL if end_flag else '')
         return print(text) if pf else text
 
     @classmethod
