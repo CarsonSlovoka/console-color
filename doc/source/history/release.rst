@@ -10,6 +10,12 @@
 Release Note
 ==================
 
+0.1.0
+=========
+
+    - update the version to the new generation. The last one is for bug-fixes.
+    - force converts the type to str, it can avoid the error like this ``cprint(5, RGB.GREEN)``
+
 0.0.3
 =========
 
