@@ -13,7 +13,8 @@ VERSION_NUMBER = __version__
 DOWNLOAD_VERSION = __version__
 PACKAGES_DIR = console_color.__name__
 SETUP_NAME = PACKAGES_DIR.replace('_', '-')
-GITHUB_URL = f'https://github.com/CarsonSlovoka/{SETUP_NAME}/tree/master'
+GITHUB_URL = f'https://github.com/CarsonSlovoka/{SETUP_NAME}'
+GITHUB_BRANCH = f'https://github.com/CarsonSlovoka/{SETUP_NAME}/tree/master'
 
 # Store original `find_package_modules` function
 find_package_modules = setuptools.command.build_py.build_py.find_package_modules
@@ -68,22 +69,21 @@ setup(
 
     install_requires=LIST_REQUIRES,
 
-    url=GITHUB_URL,
+    url=GITHUB_BRANCH,
 
     description=__description__,
     long_description=LONG_DESCRIPTION,
     long_description_content_type='text/x-rst',
     keywords=['library', 'console', 'color'],
 
-    download_url=f'{GITHUB_URL}/tarball/v{DOWNLOAD_VERSION}',
     python_requires='>=3.6.2,',
 
-    zip_safe=False,
+    zip_safe=True,
     classifiers=[  # https://pypi.org/classifiers/
         'Development Status :: 5 - Production/Stable',
 
         'Environment :: Console',
-        
+
         'License :: OSI Approved',
 
         'Natural Language :: Chinese (Traditional)',
@@ -99,6 +99,14 @@ setup(
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
     ],
+
+    project_urls={
+        'Homepage': GITHUB_BRANCH,
+        'Documentation': f'https://carsonslovoka.github.io/{SETUP_NAME}/en/doc.html',
+        'Code': GITHUB_BRANCH,
+        'Issue Tracker': f'{GITHUB_URL}/issues',
+        'Download': GITHUB_BRANCH,
+    },
 
     entry_points={
         'console_scripts': [],
